@@ -17,11 +17,14 @@
  {
     // initialize ADC with Hx711 object
     Hx711 load_cell = Hx711(D13, D12, 128);
+ 
+    while(1)
+    {
+    	// read raw data
+    	uint32_t data = load_cell.readRaw();
+    	wait(2);
+    	pc.printf("%i", data);
+    }
     
-    // read raw data
-    uint32_t data = load_cell.readRaw();
-    
-    printf(data);
-
     return 0;
  }
