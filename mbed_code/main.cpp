@@ -15,7 +15,13 @@
 
  int main(void)
  {
-     Hx711 test = Hx711(D13, D12, 128);
+    // initialize ADC with Hx711 object
+    Hx711 test = Hx711(D13, D12, 128);
+    
+    // read raw data
+    uint32_t data = readRaw();
+    
+    printf(data);
 
-     return 0;
+    return 0;
  }
