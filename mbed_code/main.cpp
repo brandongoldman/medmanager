@@ -16,10 +16,10 @@
  int main(void)
  {
     // initialize ADC with Hx711 object
-    Hx711 test = Hx711(D13, D12, 128);
+    Hx711 load_cell = Hx711(D13, D12, 128);
     
     // read raw data
-    uint32_t data = readRaw();
+    uint32_t data = load_cell.readRaw();
     
     printf(data);
 
