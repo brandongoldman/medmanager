@@ -1,4 +1,3 @@
-/* Make the functions here */
 #include "mbed.h"
 #include "Hx711.h"
 
@@ -76,3 +75,4 @@ uint8_t Hx711::shiftInMsbFirst() {
     }
     return value;
 }
+ 
