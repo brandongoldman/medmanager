@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+  </head>
+
+  <body>
+
+    <div class="container" style="padding-top: 50px;">
+      <div class="jumbotron text-center">
+
+        <h1>BPM: <span id="bpm_text">0</span></h1>
+
+        <div class="row" style="padding: 10px;">
+          <button id="get_bpm" type="button" class="btn btn-primary">GET</button>
+        </div>
+
+        <div class="row" style="padding: 10px;">
+          <div class="input-group" style="width: 200px; margin: auto;">
+            <input id="bpm_value" type="text" class="form-control">
+            <div class="input-group-btn">
+              <button id="put_bpm" type="button" class="btn btn-default">PUT</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="well text-left" style="margin-top: 30px;">
+          <h4>Statistics</h4>
+          <div class="row center-block" style="padding: 10px; padding-bottom: 20px;">
+            <h5>Minimum BPM: <span id="min_text">0</span></h5>
+            <h5>Maximum BPM: <span id="max_text">0</span></h5>
+          </div>
+          <div class="row center-block">
+            <button id="reset" type="button" class="btn btn-danger">RESET</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/socket.io.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        // Create a new WebSocket
+        var socket = io();
+
+        var last_interval = -1;
+        var toggle = 0;
+
+        // When the html element with the ID get_bpm is clicked, send a message
+        $('#get_bpm').on('click', function() {
+          // get-bpm does not need to send any parameters
+          socket.emit('get-bpm', {});
+        });
+        $('#put_bpm').on('click', function() {
+          //! Pass the text field value to the backend
+          socket.emit('put-bpm', { value: $('#bpm_value').val() });
+        });
+        $('#reset').on('click', function() {
+          socket.emit('reset', {});
+          $('#min_text').html("0");
+          $('#max_text').html("0");
+        });
+
+        // When the bpm response is received from the server, render the result
+        socket.on('bpm', function(data) {
+          console.log('bpm', data);
+          // Set the html tag value for the coresponding ID to the data
+          $('#bpm_text').html(data.value);
+
+          //! Stop the previous blink rate.
+          if (last_interval != -1)
+            clearInterval(last_interval);
+
+          //! Start up a new blink speed
+          last_interval = setInterval(function()
+          {
+            new Audio("data/click.wav").play();
+
+            //! Simple flip between green/white.
+            if (toggle == 0)
+            {
+              $("body").css("background-color", "green");
+              toggle = 1;
+            }
+            else
+            {
+              $("body").css("background-color", "white");
+              toggle = 0;
+            }
+          }, (60.0 / data.value) * 1000);
+        });
+        socket.on('min', function(data) {
+          console.log('min', data);
+          $('#min_text').html(data.value);
+        });
+        socket.on('max', function(data) {
+          console.log('max', data);
+          $('#max_text').html(data.value);
+        });
+      });
+    </script>
+
+  </body>
+
+</html>
+
+  </body>
+</html>
