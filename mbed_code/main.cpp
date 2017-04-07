@@ -31,11 +31,18 @@
         // read raw data
         int data = load_cell.readRaw();
         float mass = -1.0*data;
-        mass /= 1000.00;
-        //uint32_t mass = convertToMass(data);
+        /*mass /= 1000.00;
         mass -= 551.8;
         mass /= 25;
-
+        mass *= 2;
+        mass += 0.60; */
+        
+        mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6);
+        
+        if(mass <= 0.69)
+        {
+            mass = 0;   
+        }    
 
         //float data = load_cell.readRaw();
         //data = ((-1) * (data));
@@ -43,8 +50,8 @@
 
         // print statements for Tera Term
         wait(2); // Delay for 2 seconds
-        pc.printf("%f", mass); // Print the data to the screen for debugging
-        pc.printf("\r\n");
+        printf("%f", mass); // Print the data to the screen for debugging
+        printf("\r\n");
     }
 
     return 0;
