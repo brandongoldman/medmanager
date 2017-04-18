@@ -141,7 +141,7 @@ int main()
 
 		/*-------LOGIC OF SCALE-------*/
 		
-		// read raw data
+		        // read raw data
         int data = load_cell.readRaw();
         float mass = -1.0*data;
         /*mass /= 1000.00;
@@ -150,9 +150,13 @@ int main()
         mass *= 2;
         mass += 0.60; */
         
-        mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6);
+        //mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6);
+        mass /= 1000.00;
+        mass += 51.50;
+        mass /= 9.00;
+        mass += 0.04;
         
-        if(mass <= 0.69)
+        if(mass <= 0.05)
         {
             mass = 0;   
         }    
