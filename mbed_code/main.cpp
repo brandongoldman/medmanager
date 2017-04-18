@@ -15,8 +15,8 @@
 //! LEDs are active LOW, they must be pulled to GND (or 0, or false) to turn on.
 namespace active_low
 {
-	const bool on = false;
-	const bool off = true;
+    const bool on = false;
+    const bool off = true;
 }
 
 DigitalOut g_led_red(LED1);
@@ -53,19 +53,19 @@ volatile bool bpm_changed = false;
 //volatile bool bpm_updated = false;
 
 //! A utility function for formatting values to their string equivalent.
-void format_resource_value(size_t value, M2MResource* resource)
+void format_resource_value(float value, M2MResource* resource)
 {
-	//! Use sprintf to convert the integral value to a string.
-	char result_string[30];
-	size_t size = sprintf(result_string, "%u", value);
+    //! Use sprintf to convert the integral value to a string.
+    char result_string[30];
+    size_t size = sprintf(result_string, "%f", value);
 
-	const uint8_t* buffer = reinterpret_cast<const uint8_t*>(result_string);
-	resource->set_value(buffer, size);
+    const uint8_t* buffer = reinterpret_cast<const uint8_t*>(result_string);
+    resource->set_value(buffer, size);
 }
 
 int main()
 {
-	// Seed the RNG for networking purposes
+    // Seed the RNG for networking purposes
     unsigned seed = utils::entropy_seed();
     srand(seed);
 
@@ -74,21 +74,21 @@ int main()
     g_led_blue = active_low::off;
 
 #ifdef IOT_ENABLED
-	// Turn on the blue LED until connected to the network
+    // Turn on the blue LED until connected to the network
     g_led_blue = active_low::on;
 
-	// Need to be connected with Ethernet cable for success
+    // Need to be connected with Ethernet cable for success
     EthernetInterface ethernet;
     if (ethernet.connect() != 0)
         return 1;
 
-	// Pair with the device connector
+    // Pair with the device connector
     frdm_client client("coap://api.connector.mbed.com:5684", &ethernet);
     if (client.get_state() == frdm_client::state::error)
         return 1;
 
-	// The REST endpoints for this device
-	// Add your own M2MObjects to this list with push_back before client.connect()
+    // The REST endpoints for this device
+    // Add your own M2MObjects to this list with push_back before client.connect()
     M2MObjectList objects;
 
     M2MDevice* device = frdm_client::make_device();
@@ -103,7 +103,7 @@ int main()
 
     //! Set Point allows the user to read/write the mass value itself through
     //! GET and PUT.
-    M2MResource* set_point = mass_counter->create_dynamic_resource("5700", "integer", M2MResourceInstance::INTEGER, true);
+    M2MResource* set_point = mass_counter->create_dynamic_resource("5700", "float", M2MResourceInstance::FLOAT, true);
     set_point->set_operation(M2MBase::GET_PUT_ALLOWED);
 
     //! Units is a simple unchanging resource that specifies what kind of
@@ -121,14 +121,14 @@ int main()
     //! End Endpoint Creation
     //! *********************
 
-	// Publish the RESTful endpoints
+    // Publish the RESTful endpoints
     client.connect(objects);
 
-	// Connect complete; turn off blue LED forever
+    // Connect complete; turn off blue LED forever
     g_led_blue = active_low::off;
 #endif
 
-	// initialize ADC with Hx711 object
+    // initialize ADC with Hx711 object
     Hx711 load_cell = Hx711(D13, D12, offset, scale, 128);
     //Hx711 load_cell = Hx711(D13, D12, 128);
 
@@ -139,23 +139,23 @@ int main()
             break;
 #endif
 
-		/*-------LOGIC OF SCALE-------*/
-		
-		// read raw data
+        /*-------LOGIC OF SCALE-------*/
+
+        // read raw data
         int data = load_cell.readRaw();
         float mass = -1.0*data;
-                
+
         //mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6); <-- OLD SCALE
         mass /= 1000.00;
         mass += 51.50;
         mass /= 9.00;
         mass += 0.04;
-        
+
         if(mass <= 0.05)
         {
-            mass = 0;   
-        }    
-        
+            mass = 0;
+        }
+
         mass_changed = true; // IoT boolean
 
         // print statements for Tera Term
@@ -163,10 +163,10 @@ int main()
         printf("%f", mass); // Print the data to the screen for debugging
         printf("\r\n");
 
-		if (mass_changed)
+        if (mass_changed)
         {
-        	format_resource_value(mass, set_point);
-        	mass_changed = false;
+            format_resource_value(mass, set_point);
+            mass_changed = false;
         }
     }
 

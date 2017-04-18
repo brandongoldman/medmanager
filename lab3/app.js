@@ -76,22 +76,22 @@ function(socket, notification)
 	{
 		socket.emit('bpm', { value: notification.payload });
 
-		mbed.getResourceValue(endpoint, '3318/0/5601', function(err, data)
-		{
-			if (err)
-				throw err;
-
-			//! Send the value to the front end.
-			socket.emit('min', { value: data });
-		});
-		mbed.getResourceValue(endpoint, '3318/0/5602', function(err, data)
-		{
-			if (err)
-				throw err;
-
-			//! Send the value to the front end.
-			socket.emit('max', { value: data });
-		});
+		// mbed.getResourceValue(endpoint, '3318/0/5601', function(err, data)
+		// {
+		// 	if (err)
+		// 		throw err;
+		//
+		// 	//! Send the value to the front end.
+		// 	socket.emit('min', { value: data });
+		// });
+		// mbed.getResourceValue(endpoint, '3318/0/5602', function(err, data)
+		// {
+		// 	if (err)
+		// 		throw err;
+		//
+		// 	//! Send the value to the front end.
+		// 	socket.emit('max', { value: data });
+		// });
 	}
 });
 
