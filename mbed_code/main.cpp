@@ -141,16 +141,11 @@ int main()
 
 		/*-------LOGIC OF SCALE-------*/
 		
-		        // read raw data
+		// read raw data
         int data = load_cell.readRaw();
         float mass = -1.0*data;
-        /*mass /= 1000.00;
-        mass -= 551.8;
-        mass /= 25;
-        mass *= 2;
-        mass += 0.60; */
-        
-        //mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6);
+                
+        //mass = (((((mass / 1000) - 551.8 ) / 25) * 2) + 0.6); <-- OLD SCALE
         mass /= 1000.00;
         mass += 51.50;
         mass /= 9.00;
@@ -161,11 +156,7 @@ int main()
             mass = 0;   
         }    
         
-        mass_changed = true;
-
-        //float data = load_cell.readRaw();
-        //data = ((-1) * (data));
-        //float mass = (data / 1000);
+        mass_changed = true; // IoT boolean
 
         // print statements for Tera Term
         wait(2); // Delay for 2 seconds
